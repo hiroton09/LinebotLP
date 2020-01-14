@@ -1,0 +1,108 @@
+/* ------- body ------- */
+
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
+
+html, body {
+    height: 100%;
+    width: 100%;
+    font-family: "Poppins" , sans-serif;
+    color: #222;
+    margin: 0 0;
+    padding: 0 0;
+}
+ul {
+    list-style: none;
+}
+hr {
+    border-top: 1px solid #d5d5d5!important;
+}
+.section_title {
+    width: 100%;
+    padding: 30px 0;
+    margin-bottom:60px;
+    font-size: 30px;
+    color: #fff;
+    background-color: #13bf00;
+}
+
+/* ------- Navgation Section ------- */
+.navbar {
+    padding: .8rem;
+}
+.navbar-nav li {
+    padding-right: 20px;
+}
+.nav-link {
+    font-size: 1.1em;
+}
+.navbar-color {
+    font-size: 20px;
+    background-color: #13bf00;
+    color: #fff;
+}
+
+/* ------- Header Section ------- */
+.header {
+    width: 100%;
+}
+
+.header-img > img {
+    width: 100%;
+}
+
+/* ------- Explain Section ------- */
+
+/* ------- Use Section ------- */
+.use_body {
+    margin-bottom: 60px;
+}
+.use_img {
+    width: 100%;
+}
+
+/* ------- Service Section ------- */
+
+/* ------- Connect Section ------- */
+#connect {
+    background-color: #3f3f3f;
+    color: #d5d5d5;
+}
+.connect_title {
+    font-size: 2.0rem;
+    padding: 10px 0 0;
+}
+
+.social a{
+    font-size: 2.0em;
+    padding: 2rem;
+    color: #d5d5d5;
+}
+.fa-facebook:hover ,
+.fa-twitter:hover ,
+.fa-instagram:hover ,
+.fa-youtube:hover {
+    color: #13bf00;;
+}
+
+
+
+
+
+
+
+/* --
+	Extra small (xs) devices (portrait phones, less than 576px)
+	No media query since this is the default in Bootstrap
+
+	Small (sm) devices (landscape phones, 576px and up)
+	@media (min-width: 576px) { ... }
+
+	Medium (md) devices (tablets, 768px and up)
+	@media (min-width: 768px) { ... }
+
+	Large (lg) devices (desktops, 992px and up)
+	@media (min-width: 992px) { ... }
+
+	Extra (xl) large devices (large desktops, 1200px and up)
+	@media (min-width: 1200px) { ... }
+-- */
