@@ -1,0 +1,152 @@
+    
+' カレンダー作成
+Sub createCalendar()
+
+    ' 入力された年/月を格納
+    Dim lginputYear As Long: lginputYear = Worksheets("ｶﾚﾝﾀﾞｰ作成").Cells(7, 4)
+    Dim lginputMonth As Long: lginputMonth = Worksheets("ｶﾚﾝﾀﾞｰ作成").Cells(7, 6)
+    
+    ' 入力チェック
+     If (lginputYear < 2020 Or lginputYear > 2022 Or lginputMonth < 1 Or lginputMonth > 12) Then
+        MsgBox "入力された値が範囲外です"
+        Exit Sub
+     End If
+     
+     ' 新規シート作成
+     Call createSheet
+    
+    ' 項目表示
+    Dim lgshowRow As Long: lgshowRow = 2
+    Dim lgshowCol As Long: lgshowCol = 2
+    
+    Call displayItem(lginputYear, lginputMonth, lgshowRow, lgshowCol)
+    
+    ' 日付、曜日表示
+     Call displayDay(lginputYear, lginputMonth, lgshowRow, lgshowCol)
+    
+    '  作成物シートの最終列を取得
+    Dim lgmaxCol As Long
+    lgmaxCol = Cells(lgshowRow, lgshowCol).End(xlToRight).Column
+    
+    ' 土、日、祝のセルの列は色を塗り、 セル値をxにする
+    Call judgmentHoliday(lginputYear, lginputMonth, lgshowRow, lgshowCol, lgmaxCol)
+    
+    '罫線を引く
+    Call displayBorder(lgshowRow, lgshowCol, lgmaxCol)
+    
+End Sub
+
+' 新規シート作成
+Sub createSheet()
+
+    ' 既にｶﾚﾝﾀﾞｰが作成されていたら削除する
+    Dim ws As Worksheet, flag As Boolean
+    For Each ws In Worksheets
+        If ws.Name = "作成物" Then flag = True
+    Next ws
+    If flag = True Then
+        Application.DisplayAlerts = False
+        Sheets("作成物").Delete
+        Application.DisplayAlerts = True
+    End If
+     
+    ' 新規シートを作成
+    Worksheets.Add after:=Worksheets(Worksheets.Count)
+    
+    ' 新規シートの名前変更
+     ActiveSheet.Name = "作成物"
+     
+End Sub
+
+' 入力された年/月、現金合計、売掛合計、合計、支払い方法、売掛を各セルに表示
+Sub displayItem(lginputYear, lginputMonth, lgshowRow, lgshowCol)
+    
+    '1列目
+    Cells(lgshowRow, lgshowCol) = lginputYear & "/" & lginputMonth
+    Cells(lgshowRow + 14, lgshowCol) = "現金合計"
+    Cells(lgshowRow + 15, lgshowCol) = "売掛合計"
+    Cells(lgshowRow + 16, lgshowCol) = "合計"
+    
+    '2列目
+    Cells(lgshowRow, lgshowCol + 1) = "支払い方法"
+    For i = 2 To 13
+        Cells(lgshowRow + i, lgshowCol + 1) = "売掛"
+    Next
+     
+    ' セルの結合
+    Range(Cells(lgshowRow, lgshowCol), Cells(lgshowRow + 1, lgshowCol)).Merge
+    Application.DisplayAlerts = False
+    Range(Cells(lgshowRow, lgshowCol + 1), Cells(lgshowRow + 1, lgshowCol + 1)).Merge
+    Application.DisplayAlerts = False
+    
+End Sub
+
+' 日付、曜日表示
+Sub displayDay(lginputYear, lginputMonth, lgshowRow, lgshowCol)
+
+    ' 入力された年/月の月末日を取得し、1日から月末日までの日付と曜日を表示
+    Dim stdate As String
+    Dim lglastDay As Long
+    
+    stdate = lginputYear & "/" & lginputMonth
+    lglastDay = Format(DateSerial(Year(stdate), Month(stdate) + 1, 0), "d")
+    
+    For i = 1 To lglastDay
+        Cells(lgshowRow, lgshowCol + 1 + i) = i
+        Cells(lgshowRow + 1, lgshowCol + 1 + i) = WeekdayName(Weekday(lginputYear & "/" & lginputMonth & "/" & i), True)
+        
+        ' 列の幅調整
+       Cells(lgshowRow, lgshowCol + 1 + i).ColumnWidth = 3
+    Next
+    
+End Sub
+
+' 土、日、祝判定
+Sub judgmentHoliday(lginputYear, lginputMonth, lgshowRow, lgshowCol, lgmaxCol)
+
+        For i = lgshowCol To lgmaxCol
+        
+            '祝日判定
+            Dim holiday As Boolean
+            Dim stseachDay As String
+            stseachDay = lginputYear & "/" & lginputMonth & "/" & i - 1
+            
+           '祝日シート から祝日を検索
+           Dim lgholidayMaxRow As Long
+           Dim stseachHoliday As String
+           Dim lgcntRow As Long: lgcntRow = 1
+           
+           lgholidayMaxRow = Worksheets("祝日").Cells(lgshowRow, lgshowCol).End(xlDown).Row
+            
+           Do While lgholidayMaxRow <> lgcntRow
+               If stseachDay = Worksheets("祝日").Cells(lgcntRow, lgshowCol) Then
+                   holiday = True
+                   Exit Do
+               Else
+                   holiday = False
+               End If
+               lgcntRow = lgcntRow + 1
+           Loop
+           
+            If (Cells(lgshowRow + 1, lgshowCol + i) = "土") Or (Cells(lgshowRow + 1, lgshowCol + i) = "日" Or holiday = True) Then
+                Range(Cells(lgshowRow + 2, lgshowCol + i), Cells(lgshowRow + 16, lgshowCol + i)).Interior.ColorIndex = 15
+                Range(Cells(lgshowRow + 2, lgshowCol + i), Cells(lgshowRow + 16, lgshowCol + i)) = "x"
+                Range(Cells(lgshowRow + 2, lgshowCol + i), Cells(lgshowRow + 16, lgshowCol + i)).HorizontalAlignment = xlCenter
+            End If
+        Next
+        
+End Sub
+
+'罫線を引く
+Sub displayBorder(lgshowRow, lgshowCol, lgmaxCol)
+
+    Range(Cells(lgshowRow, lgshowCol), Cells(lgshowRow + 16, lgmaxCol)).Borders.LineStyle = xlContinuous
+    
+    ' 合計の外枠を太線
+    Range(Cells(lgshowRow + 16, lgshowCol), Cells(lgshowRow + 16, lgmaxCol)).Select
+    Selection.Borders(xlEdgeTop).Weight = xlThick
+    Selection.Borders(xlEdgeRight).Weight = xlThick
+    Selection.Borders(xlEdgeBottom).Weight = xlThick
+    Selection.Borders(xlEdgeLeft).Weight = xlThick
+    
+End Sub
